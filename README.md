@@ -1,6 +1,6 @@
 # STM32-CAN Rx/Tx
 
-This document is step by step procedure to read and write CAN data for STM32 based **CAN data diode** developed by Dr.Jeremy Daily. The MCU used for this project is a **STM32F042K4**.
+This document is step by step procedure to read and write CAN data for STM32 based **CAN Data diode** developed by Dr.Jeremy Daily. The MCU used for this project is a **STM32F042K4**. Link to [CAN Data Diode](https://github.com/SystemsCyber/CAN-Data-Diode-STM32-ARM) project.
 
 In this project we have used a **Interrupt based** reading and writing mechanism. We send the recieved CAN message through UART communication. We have used a MCP2562 as a CAN transceiver in this project. For more information refer to the [schematic](http://hades.mech.northwestern.edu/images/5/5e/MCP2562.pdf)
 
@@ -46,7 +46,7 @@ We need [STM32 cubeMX software](https://www.st.com/en/development-tools/stm32cub
         
      * Make sure you enable the Interrupt in the NVIC Settings. 
         
-        ![Interrupt](https://user-images.githubusercontent.com/60307352/96559654-903a9300-127a-11eb-9b06-50afe61b8260.jpg)
+       ![Interrupt](https://user-images.githubusercontent.com/60307352/96560942-291dde00-127c-11eb-8107-f1066d6a23eb.jpg)
         
  4. Configuring the Clock
      * We use the clock at 48Mhz in order to enable high CAN baud rates. The Clock configuration should look like this:
@@ -98,7 +98,7 @@ We need [STM32 cubeMX software](https://www.st.com/en/development-tools/stm32cub
    /* USER CODE END CAN_Init 2 */
    ```
 
-   Make Sure the respective external variables are initialized inside the  **stm32f0xx_it.c** file:
+   The respective external variables should be initialized inside the  **stm32f0xx_it.c** file:
    
    ```C
    /* External variables --------------------------------------------------------*/
