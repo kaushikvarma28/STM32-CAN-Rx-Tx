@@ -1,18 +1,39 @@
-# Read-CAN-STM32
+# STM32-CAN Rx/Tx
 
-This is my attempt to document the process of configuring STM32 to read CAN data. The board used for this project is a **STM32F042K6 (Nucleo-F042K6)**.
+This document is step by step procedure to read and write CAN data for STM32 based **CAN data diode** developed by Dr.Jeremy Daily. The MCU used for this project is a **STM32F042K4**.
 
-In this project we have used a **Interrupt based** reading mechanism and we print the recieved CAN messages on the Serial Monitor. I have used the [STM32 Truck Shield](https://github.com/gannaramu/STM32F042K6-Shield) from my previous projects. we have used a MCP2562 as a CAN transciever in this project. For more information refer to the [schematic]
+In this project we have used a **Interrupt based** reading and writing mechanism. We send the recieved CAN message through UART communication. We have used a MCP2562 as a CAN transceiver in this project. For more information refer to the [schematic](http://hades.mech.northwestern.edu/images/5/5e/MCP2562.pdf)
 
 
 ## Configuration
-1. Configure the Pins.
+
+We need [STM32 cubeMX software](https://www.st.com/en/development-tools/stm32cubemx.html) for the initial pin configuration as well as to generate the corresponding initialization C code.
+
+1. Select the MCU.
+    * First select the MCU by searching the correct part number required in the MCU selector. In my case STM32F042G4, if working with STM32 based boards you need to search in         the board selector. 
+    
+      ![MCU selector](https://user-images.githubusercontent.com/60307352/96543242-295cb000-1261-11eb-891d-3df5354cbfaa.jpg)
+      
+2. Configure the Pins.
     * The following image shows the pin configuration used in this project.
     
-    ![CAN1](./images/Capture_1.jpg)
+    ![Pin Configuration](https://user-images.githubusercontent.com/60307352/96539783-25c52b00-1259-11eb-93d7-819352267330.png)
 
-2. Configure the CAN.
-    * The CAN Baud rate for this project is **250 kbit/s**. The clock is set to **48Mhz**. The Bit Timing for such configuration is as follows:
+3. Configure the CAN.
+    * By default, the CAN in the connectivity will be disabled as shown in the picture below.
+    
+    
+    ![Connectivity default](https://user-images.githubusercontent.com/60307352/96543648-0f6f9d00-1262-11eb-9f33-abe27aabef0a.jpg)
+    
+    
+    * So, to enable CAN we need to go to the system core and open SYS. And by enabling the pins PA11/PA12 instead of pins PA9/PA10 the CAN will be enabled as shown in the picture       below.
+    
+    
+    ![SYS](https://user-images.githubusercontent.com/60307352/96544120-2793ec00-1263-11eb-8009-9143ff9652e1.jpg)
+    
+
+    
+    * Enable the Master mode in the CAN to make the configuration changes. The next step is to set the CAN Baud rate. For this project it is **250 kbit/s**. The clock is set to       **48Mhz**. The Bit Timing for such configuration is as follows:
     
         | Prescalar | Bit Seg 1 | Bit Seg 2 |
         |:---------:|:---------:|:---------:|
@@ -21,34 +42,40 @@ In this project we have used a **Interrupt based** reading mechanism and we prin
         Bit timing for other bit rates can be configured from [http://www.bittiming.can-wiki.info/](http://www.bittiming.can-wiki.info/)
         The configuration should look something like this:
         
-        ![CAN1](./images/config_1.jpg)
-     * Make sure you enable the Interrupt in the NVIC Settings. The Configuration for the STM32F402K6 looks like this:
+        ![CAN configuration](https://user-images.githubusercontent.com/60307352/96545065-ed2b4e80-1264-11eb-86b5-7e926cf2bfb3.jpg)
         
-        ![CAN2](./images/config_2.jpg)
+     * Make sure you enable the Interrupt in the NVIC Settings. 
         
- 3. Configuring The Clock
-     * We use the clock at 48Mhz in order to enable high CAN baudrates. The Clock configuration should look like this:
+        ![Interrupt](https://user-images.githubusercontent.com/60307352/96559654-903a9300-127a-11eb-9b06-50afe61b8260.jpg)
+        
+ 4. Configuring the Clock
+     * We use the clock at 48Mhz in order to enable high CAN baud rates. The Clock configuration should look like this:
       
-        ![Clock](./images/config_clock.jpg)
+        ![Clock](https://user-images.githubusercontent.com/60307352/96559703-9fb9dc00-127a-11eb-9027-e03770a1a05b.jpg)
         
- 4. Configure RCC
-      * The RCC configuration should look like this:
+ 5. Configure RCC
+      * Select the Crystal/Ceramic Resonator and you can leave the default configuration. The RCC configuration should look like this:
       
-         ![RC](./images/config_RCC.jpg)
+        ![RCC](https://user-images.githubusercontent.com/60307352/96545572-e2bd8480-1265-11eb-9d82-544cf3e519ea.jpg)
          
- 5. Configure UART (for printing messages on serial monitor)
-          ![UART](./images/config_uart.jpg)
-          
-          
-  After the Configuration the IDE should generate a bare code with all the peripharals configured.
+ 6. Configure UART (for printing messages on serial monitor)
+ 
+      ![UART](https://user-images.githubusercontent.com/60307352/96559091-d2afa000-1279-11eb-8783-5ac7e0417481.jpg)
+      
+  After the Configuration, select Tool chain as STM32CubeIDE in the Project Manager section and click generate code. This should generate a bare code with all the peripharals   configured.
 
 ## Code
+## CAN RX
+  
+  For editing the code you need [STM32 cubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html)
+  
+  To use the CAN as interrupt we need to make the following changes.
 
   The CAN Filter is configured inside the **MX_CAN_Init**
 
    ```C
    /* USER CODE BEGIN CAN_Init 2 */
-
+   
    CAN_FilterTypeDef sFilterConfig = {0};
    sFilterConfig.FilterBank = 0;
    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
@@ -83,4 +110,39 @@ In this project we have used a **Interrupt based** reading mechanism and we prin
    extern uint8_t space[2];
    /* USER CODE END EV */
    ```
-   Inside the **CEC_CAN_IRQHandler** function we call **HAL_CAN_GetRxMessage** to get the message. for more detailed code refer to the file [stm32f00xx_it.c](https://github.com/gannaramu/Read-CAN-STM32/blob/main/Read_CAN/Core/Src/stm32f0xx_it.c#L167-L221)
+   
+   Be sure to include these lines to initialize the CAN bus and CAN bus RX interrupt respectively.
+   
+   ```C
+   /* USER CODE BEGIN 2 */ 
+   HAL_CAN_Start(&hcan);
+   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+   /* USER CODE END 2 */ 
+   ```
+   
+   Inside the **CEC_CAN_IRQHandler** function we call **HAL_CAN_GetRxMessage** to get the message. For more detailed code refer to the file [stm32f00xx_it.c](https://github.com/kaushikvarma28/STM32-CAN-Rx-Tx/blob/main/STM32F042G4_Interrupt_CAN/Core/Src/stm32f0xx_it.c)
+   
+## CAN TX
+
+   Define the CAN Tx headers as
+   
+  ```C 
+  /* USER CODE BEGIN 2 */ 
+  txHeader.DLC = 8;
+  txHeader.IDE = CAN_ID_STD;
+  txHeader.RTR = CAN_RTR_DATA;
+  txHeader.StdId = 0xCC4216;
+  txHeader.ExtId = 0x02;
+  txHeader.TransmitGlobalTime = DISABLE;
+   /* USER CODE END 2 */
+   ```
+   
+   And for CAN message transmission, use the following code in the while(1) function.
+   
+   ```C 
+   uint8_t csend[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
+   HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
+   ```
+   
+   For more details refer to the main() function [main.c](https://github.com/kaushikvarma28/STM32-CAN-Rx-Tx/blob/main/STM32F042G4_Interrupt_CAN/Core/Src/main.c)
+   
