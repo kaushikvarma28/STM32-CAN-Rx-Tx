@@ -46,7 +46,7 @@ We need [STM32 cubeMX software](https://www.st.com/en/development-tools/stm32cub
         
      * Make sure you enable the Interrupt in the NVIC Settings. 
         
-       ![Interrupt](https://user-images.githubusercontent.com/60307352/96560942-291dde00-127c-11eb-8107-f1066d6a23eb.jpg)
+       ![Interrupt](https://user-images.githubusercontent.com/60307352/96561716-2a033f80-127d-11eb-861d-94e173ace0ef.jpg)
         
  4. Configuring the Clock
      * We use the clock at 48Mhz in order to enable high CAN baud rates. The Clock configuration should look like this:
