@@ -56,7 +56,10 @@ static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-uint8_t canRX[8] = {0,0,0,0,0,0,0,0};  //CAN Bus Receive Buffer 
+CAN_RxHeaderTypeDef rxHeader; //CAN Bus Transmit Header
+CAN_TxHeaderTypeDef txHeader; //CAN Bus Receive Header
+uint8_t canRX[8] = {0,0,0,0,0,0,0,0};  //CAN Bus Receive Buffer
+CAN_FilterTypeDef canfil; //CAN Bus Filter
 uint32_t canMailbox; //CAN Bus Mail box variable+
 /* USER CODE END PFP */
 
@@ -69,6 +72,8 @@ uint8_t               TxData[8];
 uint8_t               RxData[8];
 uint32_t              TxMailbox;
 uint32_t              RxMailbox;
+CAN_TxHeaderTypeDef pHeader; //declare a specific header for message transmittions
+CAN_RxHeaderTypeDef pRxHeader; //declare header for message reception
 uint32_t TxMailbox;
 uint8_t a,r; //declare byte to be transmitted //declare a receive byte
 CAN_FilterTypeDef sFilterConfig={0}; //declare CAN filter structure
@@ -108,6 +113,17 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+  canfil.FilterBank = 0;
+  canfil.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfil.FilterFIFOAssignment = CAN_RX_FIFO0;
+  canfil.FilterIdHigh = 0;
+  canfil.FilterIdLow = 0;
+  canfil.FilterMaskIdHigh = 0;
+  canfil.FilterMaskIdLow = 0;
+  canfil.FilterScale = CAN_FILTERSCALE_32BIT;
+  canfil.FilterActivation = ENABLE;
+  canfil.SlaveStartFilterBank = 14;
+
   txHeader.DLC = 8;
   txHeader.IDE = CAN_ID_STD;
   txHeader.RTR = CAN_RTR_DATA;
@@ -123,9 +139,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-     uint8_t csend[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
-   HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
-   HAL_Delay(10);
+	      uint8_t csend[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
+	  	  HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
+	  	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

@@ -46,8 +46,8 @@ F042G4_Interrupt_CANRX.bin \
 all: F042G4_Interrupt_CANRX.elf secondary-outputs
 
 # Tool invocations
-F042G4_Interrupt_CANRX.elf: $(OBJS) $(USER_OBJS) C:\Users\kaush\OneDrive\Documents\STM\ 32\F042G4_Interrupt_CANRX\STM32F042G4UX_FLASH.ld
-	arm-none-eabi-gcc -o "F042G4_Interrupt_CANRX.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\kaush\OneDrive\Documents\STM 32\F042G4_Interrupt_CANRX\STM32F042G4UX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F042G4_Interrupt_CANRX.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+F042G4_Interrupt_CANRX.elf: $(OBJS) $(USER_OBJS) C:\Users\localuser\Documents\STM32\F042G4_Interrupt_CANRX\STM32F042G4UX_FLASH.ld
+	arm-none-eabi-gcc -o "F042G4_Interrupt_CANRX.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\localuser\Documents\STM32\F042G4_Interrupt_CANRX\STM32F042G4UX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F042G4_Interrupt_CANRX.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -182,25 +182,27 @@ void CEC_CAN_IRQHandler(void)
 	sprintf(B4,"%0x",RxData[4]);
 	sprintf(B5,"%0x",RxData[5]);
 	sprintf(B6,"%0x",RxData[6]);
-	sprintf(B7,"%0x",RxData[7]);
+    sprintf(B7,"%0x",RxData[7]);
+
+
 
 	HAL_UART_Transmit(&huart1, (uint8_t *)buffer1, sizeof(buffer1), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
 	HAL_UART_Transmit(&huart1, (uint8_t *)B0, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B1, sizeof(B1), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B1, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B2, sizeof(B2), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B2, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B3, sizeof(B3), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B3, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B4, sizeof(B4), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B4, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B5, sizeof(B5), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B5, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B6, sizeof(B6), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B6, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
-	HAL_UART_Transmit(&huart1, (uint8_t *)B7, sizeof(B7), 20);
+	HAL_UART_Transmit(&huart1, (uint8_t *)B7, sizeof(B0), 20);
 	HAL_UART_Transmit(&huart1, space, sizeof(space), 20);
 	HAL_UART_Transmit(&huart1, newline, sizeof(newline), 20);
 	//  GPIOD->ODR=r<<12; //use output data register to turn on LEDs
